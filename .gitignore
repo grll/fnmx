@@ -1,0 +1,6 @@
+.DS_Store
+
+# Ignore local binaries
+fnmx
+fnm
+dist
