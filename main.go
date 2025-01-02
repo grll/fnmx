@@ -17,24 +17,24 @@ func findFnm() string {
 			localFnm += ".exe"
 		}
 		if _, err := os.Stat(localFnm); err == nil {
-			fmt.Printf("Using local fnm: %s\n", localFnm)
+			fmt.Fprintf(os.Stderr, "Using local fnm: %s\n", localFnm)
 			return localFnm
 		}
 	}
 
 	// If we have fnm in PATH, get its actual location
 	if pathFnm, err := exec.LookPath("fnm"); err == nil {
-		fmt.Printf("Using system fnm: %s\n", pathFnm)
+		fmt.Fprintf(os.Stderr, "Using system fnm: %s\n", pathFnm)
 		return pathFnm
 	}
 
-	fmt.Println("Warning: fnm not found in local directory or PATH")
+	fmt.Fprintln(os.Stderr, "Warning: fnm not found in local directory or PATH")
 	return "fnm"
 }
 
 func main() {
 	if len(os.Args) < 2 {
-		fmt.Println("Usage: fnmx <node-version> [command]")
+		fmt.Fprintln(os.Stderr, "Usage: fnmx <node-version> [command]")
 		os.Exit(1)
 	}
 
@@ -43,10 +43,10 @@ func main() {
 
 	// Install the version
 	install := exec.Command(fnmPath, "install", version)
-	install.Stdout = os.Stdout
+	install.Stdout = os.Stderr
 	install.Stderr = os.Stderr
 	if err := install.Run(); err != nil {
-		fmt.Printf("Error installing Node version: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Error installing Node version: %v\n", err)
 		os.Exit(1)
 	}
 
@@ -57,7 +57,7 @@ func main() {
 		exec.Stderr = os.Stderr
 		exec.Stdin = os.Stdin
 		if err := exec.Run(); err != nil {
-			fmt.Printf("Error executing command: %v\n", err)
+			fmt.Fprintf(os.Stderr, "Error executing command: %v\n", err)
 			os.Exit(1)
 		}
 	}
